@@ -1,0 +1,36 @@
+server:
+  port:  5004
+  servlet:
+    context-path: /inventory-manage
+
+spring:
+  application:
+    name: inventory-manage
+  profiles:
+    active: qa
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.0.114:8848
+        namespace: crm_${spring.profiles.active}
+      config:
+        server-addr: 192.168.0.114:8848
+        namespace: crm_${spring.profiles.active}
+        file-extension: yml
+        prefix: ${spring.application.name}
+        shared-dataids: database.yml,redis.yml,kafka.yml,oss.yml
+        refreshable-dataids: database.yml
+    sentinel:
+      transport:
+        dashboard: 192.168.0.114:8080
+##设置单个文件和所有文件的大小
+  http:
+  servlet:
+    multipart:
+      max-file-size:  3000MB
+      max-request-size: 3000MB
+
+
+feign:
+  sentinel:
+    enabled: true

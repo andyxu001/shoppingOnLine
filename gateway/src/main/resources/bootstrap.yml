@@ -1,0 +1,79 @@
+server:
+  port:  5008
+  servlet:
+    context-path: /shopping
+
+
+spring:
+  application:
+    name: shooping-gateway
+  profiles:
+    active: qa
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.0.114:8848
+        namespace: crm_${spring.profiles.active}
+      config:
+        server-addr: 192.168.0.114:8848
+        namespace: crm_${spring.profiles.active}
+        file-extension: yml
+        prefix: ${spring.application.name}
+        shared-dataids: database.yml,redis.yml,kafka.yml
+        refreshable-dataids: database.yml
+
+    gateway:
+      enabled: true
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-manage     #1 用户管理模块(5001)
+          uri: lb://user-manage
+          predicates:
+            - Path=/user-manage/**
+          filters:
+            - StripPrefix=0    #从前面截取一个，实际上就是截取url
+
+        - id: commodity-manage   #2 商品模块(5002)
+            uri: lb://commodity-manage
+            predicates:
+              - Path=/commodity-manage/**
+            filters:
+              - StripPrefix=0    #从前面截取一个，实际上就是截取url
+
+        - id: order-manage     #3 订单模块(5003)
+            uri: lb://order-manage
+            predicates:
+              - Path=/order-manage/**
+            filters:
+              - StripPrefix=0    #从前面截取一个，实际上就是截取url
+
+        - id: inventory-manage    #4 库存模块(5004)
+            uri: lb://inventory-manage
+            predicates:
+              - Path=/inventory-manage/**
+            filters:
+              - StripPrefix=0    #从前面截取一个，实际上就是截取url
+
+        - id: pay-manage    #5  支付模块(5005)
+            uri: lb://pay-manage
+            predicates:
+              - Path=/pay-manage/**
+            filters:
+              - StripPrefix=0    #从前面截取一个，实际上就是截取url
+
+        - id: log-manage    #6 日志模块(5006)
+            uri: lb://log-manage
+            predicates:
+              - Path=/log-manage/**
+            filters:
+              - StripPrefix=0    #从前面截取一个，实际上就是截取url
+
+        - id: score-manage    #7 积分模块(5007)
+            uri: lb://score-manage
+            predicates:
+              - Path=/score-manage/**
+            filters:
+              - StripPrefix=0    #从前面截取一个，实际上就是截取url
